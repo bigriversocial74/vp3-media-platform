@@ -1,8 +1,8 @@
 name: Import VP3 Foundation v1
 
 on:
-  pull_request_target:
-    types: [opened, reopened]
+  pull_request:
+    types: [reopened]
 
 permissions:
   contents: write
