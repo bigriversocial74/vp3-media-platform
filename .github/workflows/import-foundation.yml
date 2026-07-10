@@ -1,17 +1,16 @@
 name: Import VP3 Foundation v1
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - '.github/workflows/import-foundation.yml'
+  pull_request_target:
+    types: [opened, reopened]
 
 permissions:
   contents: write
+  pull-requests: read
 
 jobs:
   import-and-verify:
+    if: github.event.pull_request.head.ref == 'feature/vp3-foundation-v1'
     runs-on: ubuntu-latest
     steps:
       - name: Check out the Foundation feature branch
