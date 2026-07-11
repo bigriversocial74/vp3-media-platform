@@ -11,6 +11,7 @@ require VP3_ROOT . '/includes/header.php';
 <a href="<?= vp3_e(vp3_url('account-licenses.php')) ?>">Licenses</a>
 <a href="<?= vp3_e(vp3_url('account-hosting.php')) ?>">Hosting</a>
 <a href="<?= vp3_e(vp3_url('account-downloads.php')) ?>">Downloads</a>
+<a href="<?= vp3_e(vp3_url('account-network.php')) ?>">Network & clips</a>
 <a href="<?= vp3_e(vp3_url('account-support.php')) ?>">Support</a>
 <form method="post" action="<?= vp3_e(vp3_url('logout.php')) ?>"><?= vp3_csrf_field() ?><button class="button small secondary" type="submit">Sign out</button></form>
 </nav></aside><section class="dashboard-main">
