@@ -28,6 +28,21 @@ Standalone PHP/MySQL business platform for selling, licensing, hosting, installi
 
 See `docs/CLIPS-SYNDICATION.md` for the source-platform contract.
 
+## VP3 Sales & Creative Project Operations v1
+
+- Public creative-services presentation, contact lead capture, and discovery-call requests
+- Lead pipeline with qualification stages, source attribution, priorities, notes, activities, and follow-up dates
+- Configurable service packages and proposal line items
+- Authenticated proposal review and acceptance with account-email verification
+- Structured customer project briefs and managed project activation
+- Customer and administrator project dashboards
+- Milestones, dependent tasks, assignments, approvals, shared comments, activity history, and readiness scoring
+- Secure HTTPS asset-reference library foundation
+- Draft production plans and future AI-management data boundaries
+- Customer notifications and expanded sales/project/creative staff permissions
+
+See `docs/SALES-CREATIVE-OPERATIONS.md` for the workflow and trust boundaries.
+
 ## Requirements
 
 - PHP 8.2+
@@ -40,7 +55,7 @@ See `docs/CLIPS-SYNDICATION.md` for the source-platform contract.
 
 1. Copy `config-example.php` to `config.php`.
 2. Generate unique values for `security.app_key` and `security.license_pepper`.
-3. Create the database and import `database/schema.sql`. Existing Foundation v1 environments should run `database/migrations/20260710_network_clips_v1.sql`.
+3. Create the database and import `database/schema.sql`. Existing installations should run applicable migrations in order: `database/migrations/20260710_network_clips_v1.sql`, then `database/migrations/20260711_sales_creative_operations_v1.sql`.
 4. Make `var/logs` and `var/locks` writable by the PHP process.
 5. Create the first administrator:
 
@@ -102,6 +117,7 @@ Checkout creates pending orders through provider-neutral business logic. Stripe 
 find . -name '*.php' -not -path './vendor/*' -print0 | xargs -0 -n1 php -l
 php tests/smoke.php
 php tests/static-audit.php
+bash tests/http-smoke.sh
 ```
 
 ## SQL

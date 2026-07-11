@@ -38,6 +38,14 @@ $assert(vp3_admin_can(['role' => 'operations'], 'network.manage'), 'Operations n
 $assert(vp3_admin_can(['role' => 'billing'], 'orders.manage'), 'Billing permission missing');
 $assert(!vp3_admin_can(['role' => 'billing'], 'clips.moderate'), 'Billing role is over-privileged');
 $assert(vp3_admin_can(['role' => 'owner'], 'settings.manage'), 'Owner permission missing');
+$assert(vp3_admin_can(['role' => 'sales'], 'sales.manage'), 'Sales pipeline permission missing');
+$assert(!vp3_admin_can(['role' => 'sales'], 'licenses.manage'), 'Sales role is over-privileged');
+$assert(vp3_admin_can(['role' => 'project_manager'], 'projects.manage'), 'Project manager permission missing');
+$assert(vp3_admin_can(['role' => 'writer'], 'projects.manage'), 'Writer project permission missing');
+$assert(!vp3_admin_can(['role' => 'writer'], 'sales.manage'), 'Writer role is over-privileged');
+$assert(!vp3_admin_can(['role' => 'billing'], 'projects.manage'), 'Billing role has project write access');
+$assert(vp3_text_length('VP3') === 3, 'Portable text length helper failed');
+$assert(vp3_text_slice('VP3 Media', 3) === 'VP3', 'Portable text slice helper failed');
 
 $redacted = vp3_redact(['password' => 'secret', 'nested' => ['token' => 'x']]);
 $assert($redacted['password'] === '[REDACTED]', 'Password redaction failed');
@@ -54,9 +62,12 @@ $assert(vp3_network_verify('VP3-VRF-STONE001') !== null, 'Public verification fa
 $required = [
     'index.php','products.php','product.php','hosting.php','pricing.php','features.php','demo.php',
     'network.php','shows.php','show.php','creators.php','creator.php','clips.php','clip.php','licenses.php','verify-platform.php',
+    'services.php','book-demo.php','contact.php',
     'signup.php','login.php','forgot-password.php','reset-password.php','verify-email.php','checkout.php',
     'account.php','account-orders.php','account-licenses.php','account-hosting.php','account-downloads.php','account-network.php','account-support.php',
+    'account-project-brief.php','account-projects.php','account-project.php','account-proposals.php','account-proposal.php','account-notifications.php','account-assets.php',
     'admin/index.php','admin/customers.php','admin/products.php','admin/plans.php','admin/orders.php',
+    'admin/leads.php','admin/lead.php','admin/demo-requests.php','admin/service-packages.php','admin/service-package.php','admin/proposals.php','admin/proposal.php','admin/projects.php','admin/project.php','admin/project-briefs.php',
     'admin/licenses.php','admin/hosting.php','admin/installations.php','admin/releases.php','admin/support.php','admin/audit.php',
     'admin/creators.php','admin/creator.php','admin/shows.php','admin/show.php','admin/clips.php','admin/clip.php',
     'admin/public-listings.php','admin/public-listing.php','admin/theme.php',
@@ -65,8 +76,9 @@ $required = [
     'api/v1/clips/publications.php','api/v1/clips/status.php','api/v1/clips/analytics.php',
     'api/v1/clips/view.php','api/v1/clips/engage.php','api/v1/clips/report.php','api/v1/feed/clips.php','api/v1/public/verify-platform.php',
     'src/Network/ClipSyndicationService.php','src/Network/FeedService.php','src/Network/PublicLicenseService.php',
-    'src/Payments/WebhookEventService.php','database/schema.sql','database/schema-network.sql',
-    'database/migrations/20260710_network_clips_v1.sql','.github/workflows/ci.yml',
+    'src/Sales/LeadService.php','src/Sales/ProposalService.php','src/Projects/ProjectService.php','includes/operations.php',
+    'src/Payments/WebhookEventService.php','database/schema.sql','database/schema-network.sql','database/schema-creative-operations.sql',
+    'database/migrations/20260710_network_clips_v1.sql','database/migrations/20260711_sales_creative_operations_v1.sql','.github/workflows/ci.yml',
 ];
 foreach ($required as $file) $assert(is_file(VP3_ROOT . '/' . $file), 'Missing required file: ' . $file);
 
@@ -76,10 +88,22 @@ $clipSource = file_get_contents(VP3_ROOT . '/src/Network/ClipSyndicationService.
 foreach (['source_platform_uuid','installation_token','rights_status','httpsUrl','source_clip_uuid','stale_source_update','recordReport','textSlice'] as $needle) {
     $assert(str_contains($clipSource, $needle), 'Clip syndication control missing: ' . $needle);
 }
+$proposalSource = file_get_contents(VP3_ROOT . '/src/Sales/ProposalService.php') ?: '';
+foreach (['acceptance_email_must_match_account','lead_customer_mismatch','proposal_items_required','customer_not_available'] as $needle) {
+    $assert(str_contains($proposalSource, $needle), 'Proposal control missing: ' . $needle);
+}
+$projectSource = file_get_contents(VP3_ROOT . '/src/Projects/ProjectService.php') ?: '';
+foreach (['task_project_mismatch','asset_project_mismatch','creator_customer_mismatch','task_dependency_incomplete','assertBelongs'] as $needle) {
+    $assert(str_contains($projectSource, $needle), 'Project control missing: ' . $needle);
+}
+$operationsSource = file_get_contents(VP3_ROOT . '/includes/operations.php') ?: '';
+$assert(str_contains($operationsSource, "function_exists('mb_strlen')"), 'Portable text length fallback missing');
+$assert(str_contains($operationsSource, "function_exists('mb_substr')"), 'Portable text slice fallback missing');
 $readme = file_get_contents(VP3_ROOT . '/README.md') ?: '';
 $assert(str_contains($readme, 'GET /api/v1/products/{product_id}/latest-release'), 'Latest-release method documentation is incorrect');
 $assert(str_contains($readme, 'POST /api/v1/clips/status'), 'Clip status credentials must not use GET URLs');
 $assert(str_contains($readme, 'POST /api/v1/clips/report.php'), 'Clip report endpoint documentation missing');
+$assert(str_contains($readme, '20260711_sales_creative_operations_v1.sql'), 'Creative operations migration documentation missing');
 
 if ($failures) {
     foreach ($failures as $failure) fwrite(STDERR, "FAIL: {$failure}\n");

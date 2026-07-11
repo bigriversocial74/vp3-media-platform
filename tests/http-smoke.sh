@@ -11,7 +11,7 @@ trap cleanup EXIT
 sleep 1
 pages=(
   "index.php" "products.php" "product.php" "hosting.php" "pricing.php" "features.php" "demo.php"
-  "about.php" "contact.php" "support.php" "login.php" "signup.php" "forgot-password.php" "install.php"
+  "about.php" "services.php" "book-demo.php" "contact.php" "support.php" "login.php" "signup.php" "forgot-password.php" "install.php"
   "network.php" "shows.php" "show.php?slug=stonefellow" "creators.php" "creator.php?slug=roger-huston"
   "clips.php" "clip.php?id=55555555-5555-4555-8555-555555555551" "licenses.php"
   "verify-platform.php?verification_id=VP3-VRF-STONE001"
