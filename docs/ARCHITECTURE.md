@@ -18,3 +18,12 @@ Stonefellow is represented as catalog data (`VP3-STONEFELLOW-001`), not as hardc
 - Internal artifact paths are never returned by customer pages or APIs.
 - Hosting adapters receive validated records, not arbitrary shell commands.
 - Installation jobs use database transactions and filesystem locks to prevent concurrent execution.
+
+
+## VP3 Network boundary
+
+The central VP3 platform manages public creator/show identities, public-safe license verification, moderation, discovery feeds, and aggregate network analytics. Creator platforms remain authoritative for source clips, source media, schedules, and the full audience experience.
+
+A clip publication is accepted only from a verified public platform listing whose active license, domain, installation UUID, and opaque installation token match. Approved publications link back to the creator's HTTPS destination.
+
+Admin themes are stored per administrator as `light`, `dark`, or `system`; all admin components consume semantic CSS variables rather than separate duplicated stylesheets.

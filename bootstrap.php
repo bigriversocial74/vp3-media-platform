@@ -20,7 +20,7 @@ if (PHP_SAPI !== 'cli') {
     header('X-Frame-Options: SAMEORIGIN');
     header('Referrer-Policy: strict-origin-when-cross-origin');
     header("Permissions-Policy: camera=(), microphone=(), geolocation=()");
-    header("Content-Security-Policy: default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; img-src 'self' data:; frame-ancestors 'self'; base-uri 'self'; form-action 'self'");
+    header("Content-Security-Policy: default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; img-src 'self' data: https:; media-src 'self' https:; frame-ancestors 'self'; base-uri 'self'; form-action 'self'");
     if ((string)($config['app']['env'] ?? '') === 'production' && (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')) {
         header('Strict-Transport-Security: max-age=31536000; includeSubDomains');
     }

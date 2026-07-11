@@ -24,6 +24,7 @@ return [
         'license_pepper' => 'replace-with-a-separate-random-secret',
         'api_clock_skew_seconds' => 300,
         'api_rate_limit_per_minute' => 60,
+        'public_api_rate_limit_per_minute' => 120,
         'login_attempt_limit' => 5,
         'login_lock_minutes' => 15,
     ],
@@ -36,6 +37,10 @@ return [
         'provider' => 'manual',
         'stripe_secret_key' => '',
         'stripe_webhook_secret' => '',
+    ],
+    'network' => [
+        'max_clip_seconds' => 180,
+        'default_feed_limit' => 20,
     ],
     'hosting' => [
         'provider' => 'local_simulator',

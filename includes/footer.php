@@ -8,8 +8,8 @@
     </a>
     <p>Creative services, intelligent production support, and owned media platforms for storytellers ready to build a lasting audience experience.</p>
   </div>
-  <div><h4>Explore</h4><a href="<?= vp3_e(vp3_url('products.php')) ?>">Products</a><a href="<?= vp3_e(vp3_url('hosting.php')) ?>">Hosting</a><a href="<?= vp3_e(vp3_url('pricing.php')) ?>">Pricing</a><a href="<?= vp3_e(vp3_url('demo.php')) ?>">Demo</a></div>
-  <div><h4>Company</h4><a href="<?= vp3_e(vp3_url('about.php')) ?>">About VP3</a><a href="<?= vp3_e(vp3_url('contact.php')) ?>">Contact</a><a href="<?= vp3_e(vp3_url('support.php')) ?>">Support</a></div>
+  <div><h4>Explore</h4><a href="<?= vp3_e(vp3_url('network.php')) ?>">VP3 Network</a><a href="<?= vp3_e(vp3_url('shows.php')) ?>">Shows</a><a href="<?= vp3_e(vp3_url('creators.php')) ?>">Creators</a><a href="<?= vp3_e(vp3_url('clips.php')) ?>">VP3 Clips</a><a href="<?= vp3_e(vp3_url('licenses.php')) ?>">Verified platforms</a></div>
+  <div><h4>Products & company</h4><a href="<?= vp3_e(vp3_url('products.php')) ?>">Products</a><a href="<?= vp3_e(vp3_url('pricing.php')) ?>">Pricing</a><a href="<?= vp3_e(vp3_url('demo.php')) ?>">Demo</a><a href="<?= vp3_e(vp3_url('about.php')) ?>">About VP3</a><a href="<?= vp3_e(vp3_url('contact.php')) ?>">Contact</a><a href="<?= vp3_e(vp3_url('support.php')) ?>">Support</a></div>
   <div><h4>Account</h4><a href="<?= vp3_e(vp3_url('login.php')) ?>">Sign in</a><a href="<?= vp3_e(vp3_url('signup.php')) ?>">Create account</a><a href="<?= vp3_e(vp3_url('forgot-password.php')) ?>">Reset password</a></div>
   <div class="footer-cta"><span class="eyebrow">Your story deserves a home</span><h3>Launch an experience your audience can belong to.</h3><a class="button" href="<?= vp3_e(vp3_url('signup.php')) ?>">Start your platform</a></div>
   <div class="copyright"><span>© <?= date('Y') ?> VP3 Media Group. All rights reserved.</span><span>Sales · Licensing · Hosting · Creative Services</span></div>

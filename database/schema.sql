@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS admins (
  role ENUM('owner','super_admin','operations','support','billing') NOT NULL DEFAULT 'operations',
  status ENUM('active','suspended','disabled') NOT NULL DEFAULT 'active',
  last_login_at DATETIME NULL,
+ theme_preference ENUM('light','dark','system') NOT NULL DEFAULT 'system',
  created_at DATETIME NOT NULL,
  updated_at DATETIME NOT NULL,
  UNIQUE KEY uq_admins_email (email),
@@ -174,8 +175,11 @@ CREATE TABLE IF NOT EXISTS license_activations (
  CONSTRAINT fk_activations_license FOREIGN KEY (license_id) REFERENCES licenses(id) ON UPDATE CASCADE ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Extended controls: api_nonces audit_logs payment_webhook_events billing_subscriptions support_ticket_messages
+CREATE TABLE IF NOT EXISTS hosting_accounts (
+
+-- Extended controls: hosting, releases, support, security, billing, audit, and VP3 Network.
 SOURCE database/schema-operations.sql;
 SOURCE database/schema-security.sql;
+SOURCE database/schema-network.sql;
 
 SET FOREIGN_KEY_CHECKS=1;

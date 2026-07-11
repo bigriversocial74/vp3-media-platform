@@ -119,6 +119,7 @@ function vp3_client_ip(): string
     return substr((string)($_SERVER['REMOTE_ADDR'] ?? '0.0.0.0'), 0, 45);
 }
 
+
 function vp3_audit(string $actorType, ?int $actorId, string $action, ?string $entityType = null, ?string $entityUuid = null, array $metadata = []): void
 {
     if (!vp3_db_available()) {
@@ -130,4 +131,16 @@ function vp3_audit(string $actorType, ?int $actorId, string $action, ?string $en
     } catch (Throwable $e) {
         vp3_log('error', 'Audit write failed', ['action'=>$action,'message'=>$e->getMessage()]);
     }
+}
+
+function vp3_public_https_url(mixed $value, string $fallback = ''): string
+{
+    $url = trim((string)$value);
+    if ($url === '') {
+        return $fallback;
+    }
+    if (!filter_var($url, FILTER_VALIDATE_URL)) {
+        return $fallback;
+    }
+    return strtolower((string)parse_url($url, PHP_URL_SCHEME)) === 'https' ? $url : $fallback;
 }

@@ -19,7 +19,7 @@ function vp3_admin(): ?array
     if ($id < 1 || !vp3_db_available()) {
         return null;
     }
-    $stmt = vp3_db()->prepare('SELECT id, name, email, role, status FROM admins WHERE id = ? LIMIT 1');
+    $stmt = vp3_db()->prepare('SELECT id, name, email, role, status, theme_preference FROM admins WHERE id = ? LIMIT 1');
     $stmt->execute([$id]);
     $row = $stmt->fetch();
     return is_array($row) && $row['status'] === 'active' ? $row : null;
@@ -96,10 +96,10 @@ function vp3_admin_can(array $admin, string $permission): bool
         'operations' => [
             'dashboard.view','customers.view','customers.manage','products.view','products.manage',
             'orders.view','licenses.view','licenses.manage','hosting.view','hosting.manage',
-            'installations.manage','releases.manage','support.manage','audit.view',
+            'installations.manage','releases.manage','support.manage','audit.view','network.view','network.manage','clips.moderate',
         ],
         'support' => [
-            'dashboard.view','customers.view','orders.view','licenses.view','hosting.view','support.manage',
+            'dashboard.view','customers.view','orders.view','licenses.view','hosting.view','support.manage','network.view','clips.moderate',
         ],
         'billing' => [
             'dashboard.view','customers.view','orders.view','orders.manage','licenses.view','hosting.view',
