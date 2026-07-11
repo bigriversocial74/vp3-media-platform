@@ -39,6 +39,7 @@ jobs:
       - name: Reset to current main and extract
         run: |
           set -euo pipefail
+          cp .github/workflows/vp3-clips-source-import.yml /tmp/vp3-clips-source-import.yml
           git config user.name 'VP3 Build Automation'
           git config user.email 'actions@users.noreply.github.com'
           git fetch origin main
@@ -55,12 +56,19 @@ jobs:
           set -euo pipefail
           git add admin/platform-bridge.php admin/public-listings.php docs/VP3-CLIPS-SOURCE-BRIDGE-V1.md docs/VP3-CLIPS-SOURCE-BRIDGE-SCORE.md tests/clip-bridge-smoke.php .github/workflows/clips-source-bridge.yml
           git commit -m 'Build VP3 Clips bridge administration and controls'
+      - name: Retain controller for owner cleanup
+        run: |
+          set -euo pipefail
+          mkdir -p .github/workflows
+          cp /tmp/vp3-clips-source-import.yml .github/workflows/vp3-clips-source-import.yml
+          git add .github/workflows/vp3-clips-source-import.yml
+          git commit -m 'Retain temporary VP3 Clips import controller'
       - name: Verify clean source history
         run: |
           set -euo pipefail
           test ! -e .vp3-import
-          test ! -e .github/workflows/vp3-clips-source-import.yml
+          test -e .github/workflows/vp3-clips-source-import.yml
           test -z "$(git status --porcelain)"
-          git log --oneline -3
+          git log --oneline -4
       - name: Replace staging history
         run: git push --force origin "HEAD:${{ github.event.pull_request.head.ref }}"
