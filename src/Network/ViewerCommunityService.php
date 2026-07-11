@@ -77,6 +77,9 @@ final class ViewerCommunityService
             }
             $parentId = (int)$parent['id'];
             $parentViewerId = (int)$parent['viewer_id'];
+            if ($parentViewerId !== $viewerId && $this->blockedPair($viewerId,$parentViewerId)) {
+                throw new RuntimeException('viewer_interaction_blocked');
+            }
         }
 
         $uuid = \vp3_uuid();
@@ -119,6 +122,9 @@ final class ViewerCommunityService
     {
         $comment = $this->comment($commentUuid);
         $this->activeViewer($viewerId);
+        if ((int)$comment['viewer_id'] !== $viewerId && $this->blockedPair($viewerId,(int)$comment['viewer_id'])) {
+            throw new RuntimeException('viewer_interaction_blocked');
+        }
         $stmt = $this->db->prepare("SELECT id FROM viewer_comment_reactions WHERE comment_id=? AND viewer_id=? AND reaction_type='like' LIMIT 1");
         $stmt->execute([(int)$comment['id'],$viewerId]);
         $reactionId = (int)$stmt->fetchColumn();
@@ -333,6 +339,20 @@ final class ViewerCommunityService
             throw new RuntimeException('mute_target_not_found');
         }
         return $id;
+    }
+
+    private function blockedPair(int $firstId,int $secondId): bool
+    {
+        if ($firstId < 1 || $secondId < 1 || $firstId === $secondId) {
+            return false;
+        }
+        $stmt = $this->db->prepare(
+            'SELECT 1 FROM viewer_blocks WHERE
+             (blocker_viewer_id=? AND blocked_viewer_id=?)
+             OR (blocker_viewer_id=? AND blocked_viewer_id=?) LIMIT 1'
+        );
+        $stmt->execute([$firstId,$secondId,$secondId,$firstId]);
+        return (bool)$stmt->fetchColumn();
     }
 
     private function length(string $value): int
