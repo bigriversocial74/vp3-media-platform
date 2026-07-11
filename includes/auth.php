@@ -97,9 +97,25 @@ function vp3_admin_can(array $admin, string $permission): bool
             'dashboard.view','customers.view','customers.manage','products.view','products.manage',
             'orders.view','licenses.view','licenses.manage','hosting.view','hosting.manage',
             'installations.manage','releases.manage','support.manage','audit.view','network.view','network.manage','clips.moderate',
+            'sales.view','sales.manage','projects.view','projects.manage',
+        ],
+
+        'sales' => [
+            'dashboard.view','customers.view','sales.view','sales.manage','orders.view','projects.view','service_packages.view',
+        ],
+        'project_manager' => [
+            'dashboard.view','customers.view','sales.view','projects.view','projects.manage','network.view','support.manage',
+        ],
+        'creative_director' => [
+            'dashboard.view','customers.view','projects.view','projects.manage','network.view','network.manage','clips.moderate',
+        ],
+        'writer' => ['dashboard.view','projects.view','projects.manage','network.view'],
+        'producer' => ['dashboard.view','projects.view','projects.manage','network.view','clips.moderate'],
+        'hosting_operations' => [
+            'dashboard.view','customers.view','products.view','licenses.view','hosting.view','hosting.manage','installations.manage','releases.manage',
         ],
         'support' => [
-            'dashboard.view','customers.view','orders.view','licenses.view','hosting.view','support.manage','network.view','clips.moderate',
+            'dashboard.view','customers.view','orders.view','licenses.view','hosting.view','support.manage','network.view','clips.moderate','projects.view',
         ],
         'billing' => [
             'dashboard.view','customers.view','orders.view','orders.manage','licenses.view','hosting.view',
