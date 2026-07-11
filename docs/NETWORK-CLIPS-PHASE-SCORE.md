@@ -15,4 +15,6 @@
 
 **Final source/control score: 10/10**
 
+GitHub Actions must independently validate PHP syntax, executable smoke tests, the static security audit, and the public HTTP surface on the final readable branch head before merge.
+
 This score certifies source structure and controls. It does not claim live media delivery, production database migration, CDN/storage, mobile app release, or real creator-platform API traffic has been tested.
