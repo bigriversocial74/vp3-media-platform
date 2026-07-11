@@ -1,0 +1,44 @@
+name: VP3 Clips Source Bridge
+
+on:
+  pull_request:
+    paths:
+      - 'api/v1/clips/bridge/**'
+      - 'src/Network/BridgeCredentialService.php'
+      - 'src/Network/ClipBridgeService.php'
+      - 'includes/bridge-api.php'
+      - 'admin/platform-bridge.php'
+      - 'database/schema-clips-bridge.sql'
+      - 'database/migrations/20260711_vp3_clips_source_bridge_v1.sql'
+      - 'tests/clip-bridge-smoke.php'
+      - '.github/workflows/clips-source-bridge.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'api/v1/clips/bridge/**'
+      - 'src/Network/BridgeCredentialService.php'
+      - 'src/Network/ClipBridgeService.php'
+      - 'includes/bridge-api.php'
+      - 'admin/platform-bridge.php'
+      - 'database/schema-clips-bridge.sql'
+      - 'database/migrations/20260711_vp3_clips_source_bridge_v1.sql'
+      - 'tests/clip-bridge-smoke.php'
+      - '.github/workflows/clips-source-bridge.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  bridge-quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          coverage: none
+      - name: PHP syntax
+        run: |
+          find api/v1/clips/bridge src/Network includes admin tests -type f -name '*.php' -print0 | xargs -0 -n1 php -l
+      - name: Bridge contract smoke
+        run: php tests/clip-bridge-smoke.php
