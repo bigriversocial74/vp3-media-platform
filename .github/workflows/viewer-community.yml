@@ -1,0 +1,64 @@
+name: VP3 Viewer Community
+
+on:
+  pull_request:
+    paths:
+      - 'database/schema-viewer-community.sql'
+      - 'database/migrations/20260710_viewer_engagement_notifications_safety_v1.sql'
+      - 'src/Network/ViewerCommunityService.php'
+      - 'src/Network/ViewerNotificationService.php'
+      - 'src/Network/CreatorAudienceService.php'
+      - 'src/Network/ViewerFeedService.php'
+      - 'api/v1/viewer/**'
+      - 'viewer-notifications.php'
+      - 'viewer-safety.php'
+      - 'account-audience.php'
+      - 'admin/community-moderation.php'
+      - 'assets/js/community.js'
+      - 'assets/css/community.css'
+      - 'clips.php'
+      - 'includes/reels.php'
+      - 'jobs/viewer-notifications-worker.php'
+      - 'tests/viewer-community-*.php'
+      - '.github/workflows/viewer-community.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'database/schema-viewer-community.sql'
+      - 'database/migrations/20260710_viewer_engagement_notifications_safety_v1.sql'
+      - 'src/Network/ViewerCommunityService.php'
+      - 'src/Network/ViewerNotificationService.php'
+      - 'src/Network/CreatorAudienceService.php'
+      - 'src/Network/ViewerFeedService.php'
+      - 'api/v1/viewer/**'
+      - 'viewer-notifications.php'
+      - 'viewer-safety.php'
+      - 'account-audience.php'
+      - 'admin/community-moderation.php'
+      - 'assets/js/community.js'
+      - 'assets/css/community.css'
+      - 'clips.php'
+      - 'includes/reels.php'
+      - 'jobs/viewer-notifications-worker.php'
+      - 'tests/viewer-community-*.php'
+      - '.github/workflows/viewer-community.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  viewer-community-quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+      - name: PHP syntax
+        run: find api src includes admin jobs tests -type f -name '*.php' -print0 | xargs -0 -n1 php -l
+      - name: JavaScript syntax
+        run: node --check assets/js/community.js && node --check assets/js/reels.js
+      - name: Viewer community smoke
+        run: php tests/viewer-community-smoke.php
+      - name: Viewer community security audit
+        run: php tests/viewer-community-audit.php
