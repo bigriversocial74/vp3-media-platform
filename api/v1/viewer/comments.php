@@ -14,7 +14,7 @@ if(vp3_method()==='GET'){
     vp3_viewer_api_execute(fn():array=>$service->comments($uuid,$identity,(int)($input['limit']??80),(int)($input['offset']??0)));
 }
 
-$viewer=vp3_require_viewer();
+$viewer=vp3_viewer_api_require_auth();
 if(!vp3_rate_limit('viewer-comment:'.(int)$viewer['id'],20,300)){
     vp3_json(['ok'=>false,'error'=>['code'=>'comment_rate_limited','message'=>'Please wait before posting more comments.']],429);
 }
