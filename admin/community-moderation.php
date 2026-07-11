@@ -70,6 +70,7 @@ $comments=vp3_db()->query(
 )->fetchAll();
 
 $pageTitle='Community moderation';
+$extraStyles=['assets/css/community.css'];
 require VP3_ROOT.'/includes/admin-header.php';
 ?>
 <div class="admin-page-head"><div><span class="admin-kicker">Viewer safety</span><h1>Community moderation</h1><p>Review reported comments, apply visibility controls, and preserve an auditable moderation history.</p></div></div>
