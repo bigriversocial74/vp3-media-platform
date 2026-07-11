@@ -1,0 +1,24 @@
+name: VP3 Foundation CI
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  php-quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          coverage: none
+      - name: PHP syntax
+        run: find . -name '*.php' -not -path './vendor/*' -print0 | xargs -0 -n1 php -l
+      - name: Smoke tests
+        run: php tests/smoke.php
+      - name: Static security audit
+        run: php tests/static-audit.php
+      - name: HTTP surface smoke test
+        run: tests/http-smoke.sh

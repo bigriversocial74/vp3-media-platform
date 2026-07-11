@@ -1,0 +1,11 @@
+config.php
+.env
+/vendor/
+/node_modules/
+var/logs/*
+!var/logs/.gitkeep
+var/locks/*
+!var/locks/.gitkeep
+*.zip
+.DS_Store
+Thumbs.db

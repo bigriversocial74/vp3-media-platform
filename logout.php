@@ -1,0 +1,1 @@
+<?php declare(strict_types=1); require __DIR__.'/bootstrap.php'; if(vp3_method()==='POST'){vp3_verify_csrf();vp3_logout('customer');} vp3_redirect('index.php');

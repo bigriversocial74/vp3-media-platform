@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="720" viewBox="0 0 960 720" role="img" aria-labelledby="t d">
+<defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#070b1a"/><stop offset=".55" stop-color="#111a38"/><stop offset="1" stop-color="#34106a"/></linearGradient><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#6d5dfc"/><stop offset="1" stop-color="#c45cff"/></linearGradient><radialGradient id="r"><stop stop-color="#9b5cff" stop-opacity=".55"/><stop offset="1" stop-color="#9b5cff" stop-opacity="0"/></radialGradient></defs>
+<title id="t">Build the story</title><desc id="d">Writing, story development, and creative direction.</desc>
+<rect width="100%" height="100%" rx="36" fill="url(#bg)"/><circle cx="720" cy="251" r="302" fill="url(#r)"/>
+<path d="M0 590 C240 489 480 691 960 518" fill="none" stroke="#8b5cf6" stroke-opacity=".3" stroke-width="3"/>
+<g fill="#a78bfa" opacity=".6"><circle cx="70" cy="590" r="3"/><circle cx="137" cy="602" r="3"/><circle cx="204" cy="614" r="3"/><circle cx="271" cy="590" r="3"/><circle cx="338" cy="602" r="3"/><circle cx="405" cy="614" r="3"/><circle cx="472" cy="590" r="3"/><circle cx="539" cy="602" r="3"/><circle cx="606" cy="614" r="3"/><circle cx="673" cy="590" r="3"/><circle cx="740" cy="602" r="3"/><circle cx="807" cy="614" r="3"/><circle cx="874" cy="590" r="3"/><circle cx="941" cy="602" r="3"/></g>
+<text x="80" y="125" fill="#a78bfa" font-family="Arial,Helvetica,sans-serif" font-size="22" font-weight="700" letter-spacing="3">VP3 MEDIA GROUP</text>
+<text x="80" y="190" fill="white" font-family="Arial,Helvetica,sans-serif" font-size="54" font-weight="800">Build the story</text>
+<text x="80" y="240" fill="#b9c1dd" font-family="Arial,Helvetica,sans-serif" font-size="24">Writing, story development, and creative direction.</text>
+<rect x="620" y="145" width="500" height="330" rx="24" fill="#11182f" stroke="url(#g)" stroke-width="4"/>
+        <rect x="650" y="178" width="440" height="235" rx="16" fill="#0b1023"/>
+        <rect x="680" y="210" width="110" height="24" rx="12" fill="#7c3aed"/>
+        <rect x="680" y="262" width="170" height="100" rx="14" fill="#19213d"/>
+        <rect x="870" y="262" width="190" height="18" rx="9" fill="#2e3b61"/>
+        <rect x="870" y="300" width="160" height="18" rx="9" fill="#2e3b61"/>
+        <path d="M870 365 C910 330 945 390 990 345 S1060 330 1080 300" fill="none" stroke="#a78bfa" stroke-width="6"/>
+        <rect x="560" y="310" width="150" height="300" rx="28" fill="#121a33" stroke="#7c3aed" stroke-width="3"/>
+        <rect x="585" y="350" width="100" height="155" rx="12" fill="#202a4b"/>
+        <circle cx="635" cy="545" r="25" fill="url(#g)"/>
+        <rect x="1040" y="250" width="180" height="280" rx="25" fill="#121a33" stroke="#8b5cf6" stroke-width="3"/>
+        <rect x="1065" y="285" width="130" height="170" rx="14" fill="#202a4b"/>
+        <rect x="1080" y="480" width="100" height="18" rx="9" fill="#7c3aed"/><g opacity=".9"><rect x="80" y="410" width="360" height="82" rx="18" fill="#121a33" stroke="#303b62"/><circle cx="125" cy="451" r="20" fill="url(#g)"/><rect x="165" y="432" width="210" height="14" rx="7" fill="#e6e9ff"/><rect x="165" y="461" width="150" height="10" rx="5" fill="#7580a7"/></g>
+</svg>
