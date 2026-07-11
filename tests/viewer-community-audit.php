@@ -3,6 +3,7 @@ declare(strict_types=1);
 $root=dirname(__DIR__);
 $runtime='';
 foreach([
+ 'includes/viewer_api.php',
  'src/Network/ViewerCommunityService.php',
  'src/Network/ViewerNotificationService.php',
  'api/v1/viewer/comments.php',
@@ -13,7 +14,7 @@ foreach([
  'jobs/viewer-notifications-worker.php',
 ]as$file){$runtime.=(string)file_get_contents($root.'/'.$file);}
 $required=[
- 'vp3_verify_csrf','vp3_require_viewer','vp3_rate_limit','verified_viewer_required',
+ 'vp3_verify_csrf','vp3_viewer_api_require_auth','viewer_auth_required','vp3_rate_limit','verified_viewer_required',
  'viewer_blocks','viewer_mutes','viewer_comment_reports','safePath','INSERT IGNORE','viewer_interaction_blocked',
  "publication_status='published'","moderation_status='approved'","rights_status='confirmed'",
 ];
