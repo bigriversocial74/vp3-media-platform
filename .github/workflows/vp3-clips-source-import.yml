@@ -47,6 +47,7 @@ jobs:
           git reset --hard origin/main
           git clean -fdx
           tar -xzf /tmp/vp3-clips-source-bridge.tar.gz
+          rm -f .github/workflows/clips-source-bridge.yml
       - name: Commit bridge contract and API
         run: |
           set -euo pipefail
@@ -55,7 +56,7 @@ jobs:
       - name: Commit administration and verification
         run: |
           set -euo pipefail
-          git add admin/platform-bridge.php admin/public-listings.php docs/VP3-CLIPS-SOURCE-BRIDGE-V1.md docs/VP3-CLIPS-SOURCE-BRIDGE-SCORE.md tests/clip-bridge-smoke.php .github/workflows/clips-source-bridge.yml
+          git add admin/platform-bridge.php admin/public-listings.php docs/VP3-CLIPS-SOURCE-BRIDGE-V1.md docs/VP3-CLIPS-SOURCE-BRIDGE-SCORE.md tests/clip-bridge-smoke.php
           git commit -m 'Build VP3 Clips bridge administration and controls'
       - name: Retain controller for owner cleanup
         run: |
@@ -77,6 +78,7 @@ jobs:
           set -euo pipefail
           test ! -e .vp3-import
           test -e .github/workflows/vp3-clips-source-import.yml
+          test ! -e .github/workflows/clips-source-bridge.yml
           test -z "$(git status --porcelain)"
           git log --oneline -5
       - name: Replace staging tree
