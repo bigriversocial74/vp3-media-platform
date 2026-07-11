@@ -63,4 +63,4 @@ jobs:
           test -z "$(git status --porcelain)"
           git log --oneline -3
       - name: Replace staging history
-        run: git push --force-with-lease origin "HEAD:${{ github.event.pull_request.head.ref }}"
+        run: git push --force origin "HEAD:${{ github.event.pull_request.head.ref }}"
