@@ -175,10 +175,11 @@ CREATE TABLE IF NOT EXISTS license_activations (
  CONSTRAINT fk_activations_license FOREIGN KEY (license_id) REFERENCES licenses(id) ON UPDATE CASCADE ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Extended controls: hosting, releases, support, security, billing, audit, and VP3 Network.
+-- Extended controls: hosting, releases, support, security, billing, audit, VP3 Network, and viewer discovery.
 SOURCE database/schema-operations.sql;
 SOURCE database/schema-security.sql;
 SOURCE database/schema-network.sql;
+SOURCE database/schema-viewers.sql;
 SOURCE database/schema-creative-operations.sql;
 
 SET FOREIGN_KEY_CHECKS=1;
