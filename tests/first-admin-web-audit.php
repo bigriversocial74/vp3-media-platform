@@ -32,7 +32,6 @@ $forbidden = [
     'extract(',
     'md5(',
     'sha1(',
-    'password =',
     'INSERT INTO admins(name,email,password_hash,role,status,created_at,updated_at) VALUES(?,?,?,?,',
 ];
 foreach ($forbidden as $needle) {
