@@ -36,3 +36,17 @@ function vp3_api_execute(callable $callback): never
     try{vp3_json(['ok'=>true,'data'=>$callback()]);}
     catch(RuntimeException $e){$code=preg_replace('/[^a-z0-9_]+/','_',strtolower($e->getMessage()))?:'request_failed';vp3_log('warning','License API request failed',['code'=>$code]);vp3_json(['ok'=>false,'error'=>['code'=>$code,'message'=>'The license request could not be completed.']],422);}
 }
+
+function vp3_public_api_bootstrap(array $allowedMethods = ['GET']): array
+{
+    vp3_require_https_for_api();
+    $method = vp3_method();
+    if (!in_array($method, $allowedMethods, true)) {
+        header('Allow: ' . implode(', ', $allowedMethods));
+        vp3_json(['ok'=>false,'error'=>['code'=>'method_not_allowed','message'=>'Unsupported request method.']],405);
+    }
+    if (!vp3_rate_limit('public-api:' . vp3_client_ip(), (int)vp3_config('security.public_api_rate_limit_per_minute',120), 60)) {
+        vp3_json(['ok'=>false,'error'=>['code'=>'rate_limited','message'=>'Too many requests.']],429);
+    }
+    return $method === 'GET' ? $_GET : vp3_json_input();
+}
