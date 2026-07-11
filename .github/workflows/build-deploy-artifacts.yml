@@ -1,0 +1,145 @@
+name: Build VP3 Deployment Artifacts
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/build-deploy-artifacts.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Build flattened initial-install SQL
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          root = Path('.').resolve()
+          source_re = re.compile(r'^\s*SOURCE\s+(.+?)\s*;\s*$', re.IGNORECASE)
+          visited_stack = []
+
+          def expand(path: Path) -> str:
+              path = path.resolve()
+              if root not in path.parents and path != root:
+                  raise RuntimeError(f'Unsafe SOURCE path: {path}')
+              if not path.is_file():
+                  raise RuntimeError(f'Missing SQL source: {path.relative_to(root)}')
+              if path in visited_stack:
+                  chain = ' -> '.join(str(p.relative_to(root)) for p in visited_stack + [path])
+                  raise RuntimeError(f'Circular SQL SOURCE chain: {chain}')
+
+              visited_stack.append(path)
+              output = [f'\n-- BEGIN INCLUDED FILE: {path.relative_to(root)}\n']
+              for line in path.read_text(encoding='utf-8').splitlines(keepends=True):
+                  match = source_re.match(line)
+                  if match:
+                      include_path = (root / match.group(1).strip()).resolve()
+                      output.append(expand(include_path))
+                  else:
+                      output.append(line)
+              output.append(f'\n-- END INCLUDED FILE: {path.relative_to(root)}\n')
+              visited_stack.pop()
+              return ''.join(output)
+
+          header = '''-- VP3 Media Platform - Initial Installation SQL
+-- Source commit: ${{ github.event.pull_request.base.sha }}
+-- Generated from database/schema.sql with all SOURCE directives expanded.
+-- Import this one file into an empty MySQL/MariaDB database.
+
+'''
+          flattened = header + expand(root / 'database/schema.sql')
+          destination = root / 'vp3-media-platform-initial-install.sql'
+          destination.write_text(flattened, encoding='utf-8')
+
+          unresolved = source_re.findall(flattened)
+          if unresolved:
+              raise RuntimeError(f'Unresolved SOURCE directives remain: {unresolved}')
+          print(f'Generated {destination} ({destination.stat().st_size} bytes)')
+          PY
+
+      - name: Build deploy ZIP
+        shell: bash
+        run: |
+          set -euo pipefail
+          stage="$RUNNER_TEMP/vp3-media-platform"
+          mkdir -p "$stage"
+          rsync -a ./ "$stage/" \
+            --exclude '.git/' \
+            --exclude '.github/' \
+            --exclude 'vp3-media-platform-initial-install.sql'
+          cp vp3-media-platform-initial-install.sql "$stage/database/vp3-media-platform-initial-install.sql"
+          (
+            cd "$RUNNER_TEMP"
+            zip -qr "$GITHUB_WORKSPACE/vp3-media-platform-deploy.zip" vp3-media-platform
+          )
+
+      - name: Validate package and create checksums
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib
+          import re
+          import zipfile
+
+          sql = Path('vp3-media-platform-initial-install.sql')
+          archive = Path('vp3-media-platform-deploy.zip')
+          if not sql.is_file() or sql.stat().st_size < 1000:
+              raise RuntimeError('Initial-install SQL is missing or unexpectedly small.')
+          body = sql.read_text(encoding='utf-8')
+          if not re.search(r'^\s*CREATE\s+TABLE\b', body, re.IGNORECASE | re.MULTILINE):
+              raise RuntimeError('Initial-install SQL does not contain CREATE TABLE statements.')
+          if re.search(r'^\s*SOURCE\s+', body, re.IGNORECASE | re.MULTILINE):
+              raise RuntimeError('Initial-install SQL still contains SOURCE directives.')
+          with zipfile.ZipFile(archive) as package:
+              bad = package.testzip()
+              if bad:
+                  raise RuntimeError(f'Corrupt ZIP entry: {bad}')
+              names = set(package.namelist())
+              required = {
+                  'vp3-media-platform/bootstrap.php',
+                  'vp3-media-platform/config-example.php',
+                  'vp3-media-platform/install.php',
+                  'vp3-media-platform/create-first-admin.php',
+                  'vp3-media-platform/admin/login.php',
+                  'vp3-media-platform/database/vp3-media-platform-initial-install.sql',
+              }
+              missing = sorted(required - names)
+              if missing:
+                  raise RuntimeError(f'Deploy ZIP missing required files: {missing}')
+          lines = []
+          for path in (archive, sql):
+              digest = hashlib.sha256(path.read_bytes()).hexdigest()
+              lines.append(f'{digest}  {path.name}')
+          Path('SHA256SUMS.txt').write_text('\n'.join(lines) + '\n', encoding='utf-8')
+          PY
+          cat > BUILD_INFO.txt <<EOF
+          VP3 Media Platform deployment package
+          Repository: bigriversocial74/vp3-media-platform
+          Main commit: ${{ github.event.pull_request.base.sha }}
+          Generated: $(date -u +'%Y-%m-%dT%H:%M:%SZ')
+          Initial database file: vp3-media-platform-initial-install.sql
+          Browser owner setup: create-first-admin.php
+          EOF
+
+      - name: Upload deployment package
+        uses: actions/upload-artifact@v4
+        with:
+          name: vp3-media-platform-initial-deploy
+          path: |
+            vp3-media-platform-deploy.zip
+            vp3-media-platform-initial-install.sql
+            SHA256SUMS.txt
+            BUILD_INFO.txt
+          if-no-files-found: error
+          retention-days: 7
