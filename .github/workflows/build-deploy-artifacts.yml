@@ -43,8 +43,7 @@ jobs:
               for line in path.read_text(encoding='utf-8').splitlines(keepends=True):
                   match = source_re.match(line)
                   if match:
-                      include_path = (root / match.group(1).strip()).resolve()
-                      output.append(expand(include_path))
+                      output.append(expand((root / match.group(1).strip()).resolve()))
                   else:
                       output.append(line)
               output.append(f'\n-- END INCLUDED FILE: {path.relative_to(root)}\n')
@@ -52,13 +51,8 @@ jobs:
               return ''.join(output)
 
           header = '''-- VP3 Media Platform - Initial Installation SQL\n-- Source commit: ${{ github.event.pull_request.base.sha }}\n-- Generated from database/schema.sql with all SOURCE directives expanded.\n-- Import this one file into an empty MySQL/MariaDB database.\n\n'''
-          flattened = header + expand(root / 'database/schema.sql')
           destination = root / 'vp3-media-platform-initial-install.sql'
-          destination.write_text(flattened, encoding='utf-8')
-
-          unresolved = source_re.findall(flattened)
-          if unresolved:
-              raise RuntimeError(f'Unresolved SOURCE directives remain: {unresolved}')
+          destination.write_text(header + expand(root / 'database/schema.sql'), encoding='utf-8')
           print(f'Generated {destination} ({destination.stat().st_size} bytes)')
           PY
 
@@ -78,7 +72,7 @@ jobs:
             zip -qr "$GITHUB_WORKSPACE/vp3-media-platform-deploy.zip" vp3-media-platform
           )
 
-      - name: Create checksums and build information
+      - name: Validate package and create checksums
         shell: bash
         run: |
           cat > BUILD_INFO.txt <<EOF
@@ -88,13 +82,44 @@ jobs:
           Generated: $(date -u +'%Y-%m-%dT%H:%M:%SZ')
           Initial database file: vp3-media-platform-initial-install.sql
           EOF
-          sha256sum vp3-media-platform-deploy.zip vp3-media-platform-initial-install.sql > SHA256SUMS.txt
           unzip -t vp3-media-platform-deploy.zip
-          grep -Eq '^CREATE TABLE' vp3-media-platform-initial-install.sql
-          if grep -Eiq '^\s*SOURCE\s+' vp3-media-platform-initial-install.sql; then
-            echo 'Unresolved SOURCE directive found.' >&2
-            exit 1
-          fi
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          import zipfile
+
+          sql = Path('vp3-media-platform-initial-install.sql')
+          archive = Path('vp3-media-platform-deploy.zip')
+          if not sql.is_file() or sql.stat().st_size < 1000:
+              raise RuntimeError('Initial-install SQL is missing or unexpectedly small.')
+          if not archive.is_file() or archive.stat().st_size < 1000:
+              raise RuntimeError('Deployment ZIP is missing or unexpectedly small.')
+
+          text = sql.read_text(encoding='utf-8')
+          if 'CREATE TABLE' not in text.upper():
+              raise RuntimeError('Initial-install SQL contains no CREATE TABLE statements.')
+          unresolved = re.findall(r'^\s*SOURCE\s+.+?;\s*$', text, flags=re.IGNORECASE | re.MULTILINE)
+          if unresolved:
+              raise RuntimeError(f'Unresolved SOURCE directives remain: {unresolved[:5]}')
+
+          with zipfile.ZipFile(archive) as package:
+              bad = package.testzip()
+              if bad:
+                  raise RuntimeError(f'Corrupt ZIP member: {bad}')
+              names = set(package.namelist())
+              required = {
+                  'vp3-media-platform/index.php',
+                  'vp3-media-platform/bootstrap.php',
+                  'vp3-media-platform/database/vp3-media-platform-initial-install.sql',
+              }
+              missing = required - names
+              if missing:
+                  raise RuntimeError(f'Deployment ZIP is missing required files: {sorted(missing)}')
+
+          print(f'Validated SQL: {sql.stat().st_size} bytes')
+          print(f'Validated ZIP: {archive.stat().st_size} bytes')
+          PY
+          sha256sum vp3-media-platform-deploy.zip vp3-media-platform-initial-install.sql > SHA256SUMS.txt
 
       - name: Upload deployment package
         uses: actions/upload-artifact@v4
