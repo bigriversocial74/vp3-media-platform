@@ -66,3 +66,5 @@ set_exception_handler(static function (Throwable $e) use ($config): void {
     $debug = (bool)($config['app']['debug'] ?? false);
     echo $debug ? '<pre>' . vp3_e((string)$e) . '</pre>' : 'An unexpected error occurred.';
 });
+
+require_once VP3_ROOT . '/includes/operations.php';

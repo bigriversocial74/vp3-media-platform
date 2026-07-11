@@ -11,6 +11,7 @@ $networkPages = ['network.php','shows.php','show.php','creators.php','creator.ph
 $navItems = [
     'index.php' => 'Home',
     'products.php' => 'Products',
+    'services.php' => 'Services',
     'hosting.php' => 'Hosting',
     'pricing.php' => 'Pricing',
     'network.php' => 'Network',
@@ -42,7 +43,7 @@ $navItems = [
       <a class="nav-login" href="<?= vp3_e(vp3_url('account.php')) ?>">My account</a>
     <?php else: ?>
       <a class="nav-login <?= $currentPage === 'login.php' ? 'active' : '' ?>" href="<?= vp3_e(vp3_url('login.php')) ?>">Sign in</a>
-      <a class="button small" href="<?= vp3_e(vp3_url('signup.php')) ?>">Start your platform</a>
+      <a class="button small" href="<?= vp3_e(vp3_url('book-demo.php')) ?>">Book a demo</a>
     <?php endif; ?>
   </nav>
 </header>

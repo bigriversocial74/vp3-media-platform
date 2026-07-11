@@ -27,3 +27,12 @@ The central VP3 platform manages public creator/show identities, public-safe lic
 A clip publication is accepted only from a verified public platform listing whose active license, domain, installation UUID, and opaque installation token match. Approved publications link back to the creator's HTTPS destination.
 
 Admin themes are stored per administrator as `light`, `dark`, or `system`; all admin components consume semantic CSS variables rather than separate duplicated stylesheets.
+
+
+## Sales and creative operations boundary
+
+Public contact and demo forms create qualified sales records rather than directly creating customers, orders, or licenses. Service packages feed proposals; accepted proposals and approved customer briefs feed creative projects.
+
+Customer identity is the ownership boundary for proposals, briefs, projects, creators, and shows. Project identity is the ownership boundary for milestones, tasks, assets, approvals, comments, activity, and production-plan items. Cross-customer and cross-project references are rejected before writes.
+
+The asset library in this phase stores metadata and validated HTTPS references only. Binary storage and processing remain provider-adapter responsibilities. Production plans are human-controlled drafts; future AI assistance must not publish or mutate critical records without explicit approval.
