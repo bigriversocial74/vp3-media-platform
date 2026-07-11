@@ -7,4 +7,6 @@ if(stripos($runtime,'license_key')!==false)throw new RuntimeException('Viewer ac
 if(stripos((string)file_get_contents($root.'/includes/viewer_auth.php'),'token_hash')===false)throw new RuntimeException('Remembered viewer devices must store hashed tokens.');
 if(stripos((string)file_get_contents($root.'/viewer-delete.php'),'password_verify')===false)throw new RuntimeException('Viewer deletion requires password confirmation.');
 if(stripos((string)file_get_contents($root.'/api/v1/viewer/profile.php'),'viewer_auth_required')===false)throw new RuntimeException('Viewer profile writes require authenticated viewer identity.');
+$auditSchema=(string)file_get_contents($root.'/database/schema-viewer-audit.sql');
+if(stripos($auditSchema,"'viewer'")===false)throw new RuntimeException('Audit actor enum must support viewer identities.');
 echo "VP3 viewer accounts and personalized reels audit: PASS\n";

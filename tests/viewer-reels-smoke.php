@@ -2,6 +2,8 @@
 declare(strict_types=1);
 $root=dirname(__DIR__);
 $checks=[
+ 'database/schema-viewer-audit.sql'=>['audit_logs','viewer'],
+ 'database/migrations/20260710_viewer_audit_actor_v1.sql'=>['audit_logs','viewer'],
  'database/schema-viewers.sql'=>['viewer_accounts','viewer_clip_actions','viewer_watch_history','viewer_session_claims','viewer_id'],
  'includes/viewer_auth.php'=>['vp3_attempt_viewer_login','password_verify','viewer_remember_tokens','session_regenerate_id'],
  'includes/viewer_identity.php'=>['vp3_viewer_claim_anonymous_activity','viewer_session_claims','clip_view_events','clip_engagement_events'],

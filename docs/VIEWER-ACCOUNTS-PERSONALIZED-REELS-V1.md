@@ -22,11 +22,13 @@ For You ranking uses creator/show follows, genre affinity from watch completion 
 - Administrators remain separate.
 - Anonymous activity uses a random HttpOnly browser token reduced to an HMAC session hash.
 - Product license keys are never part of viewer identity.
+- Viewer actions use the `viewer` audit actor without being mixed into customer records.
 
 ## SQL
 
-Existing installations import:
+Existing installations import, in order:
 
-`database/migrations/20260710_viewer_accounts_personalized_reels_v1.sql`
+1. `database/migrations/20260710_viewer_audit_actor_v1.sql`
+2. `database/migrations/20260710_viewer_accounts_personalized_reels_v1.sql`
 
-New installations load `database/schema-viewers.sql` from the root schema.
+New installations load `database/schema-viewer-audit.sql` and `database/schema-viewers.sql` from the root schema.

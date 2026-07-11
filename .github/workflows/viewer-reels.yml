@@ -12,7 +12,10 @@ on:
       - 'assets/js/reels.js'
       - 'assets/css/reels.css'
       - 'admin/viewer*.php'
+      - 'database/schema.sql'
+      - 'database/schema-viewer-audit.sql'
       - 'database/schema-viewers.sql'
+      - 'database/migrations/20260710_viewer_audit_actor_v1.sql'
       - 'database/migrations/20260710_viewer_accounts_personalized_reels_v1.sql'
       - 'tests/viewer-reels-*.php'
       - '.github/workflows/viewer-reels.yml'
@@ -28,7 +31,10 @@ on:
       - 'assets/js/reels.js'
       - 'assets/css/reels.css'
       - 'admin/viewer*.php'
+      - 'database/schema.sql'
+      - 'database/schema-viewer-audit.sql'
       - 'database/schema-viewers.sql'
+      - 'database/migrations/20260710_viewer_audit_actor_v1.sql'
       - 'database/migrations/20260710_viewer_accounts_personalized_reels_v1.sql'
       - 'tests/viewer-reels-*.php'
       - '.github/workflows/viewer-reels.yml'
@@ -48,6 +54,8 @@ jobs:
       - name: PHP syntax
         run: |
           find . -type f -name '*.php' -not -path './vendor/*' -print0 | xargs -0 -n1 php -l
+      - name: JavaScript syntax
+        run: node --check assets/js/reels.js
       - name: Viewer and reels smoke
         run: php tests/viewer-reels-smoke.php
       - name: Viewer security audit

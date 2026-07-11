@@ -178,6 +178,7 @@ CREATE TABLE IF NOT EXISTS license_activations (
 -- Extended controls: hosting, releases, support, security, billing, audit, VP3 Network, and viewer discovery.
 SOURCE database/schema-operations.sql;
 SOURCE database/schema-security.sql;
+SOURCE database/schema-viewer-audit.sql;
 SOURCE database/schema-network.sql;
 SOURCE database/schema-viewers.sql;
 SOURCE database/schema-creative-operations.sql;
