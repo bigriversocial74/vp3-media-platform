@@ -1,0 +1,54 @@
+name: VP3 Viewer Accounts and Reels
+
+on:
+  pull_request:
+    paths:
+      - 'viewer*.php'
+      - 'clips.php'
+      - 'includes/viewer*.php'
+      - 'includes/reels.php'
+      - 'src/Network/Viewer*.php'
+      - 'api/v1/viewer/**'
+      - 'assets/js/reels.js'
+      - 'assets/css/reels.css'
+      - 'admin/viewer*.php'
+      - 'database/schema-viewers.sql'
+      - 'database/migrations/20260710_viewer_accounts_personalized_reels_v1.sql'
+      - 'tests/viewer-reels-*.php'
+      - '.github/workflows/viewer-reels.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'viewer*.php'
+      - 'clips.php'
+      - 'includes/viewer*.php'
+      - 'includes/reels.php'
+      - 'src/Network/Viewer*.php'
+      - 'api/v1/viewer/**'
+      - 'assets/js/reels.js'
+      - 'assets/css/reels.css'
+      - 'admin/viewer*.php'
+      - 'database/schema-viewers.sql'
+      - 'database/migrations/20260710_viewer_accounts_personalized_reels_v1.sql'
+      - 'tests/viewer-reels-*.php'
+      - '.github/workflows/viewer-reels.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  viewer-reels-quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          coverage: none
+      - name: PHP syntax
+        run: |
+          find . -type f -name '*.php' -not -path './vendor/*' -print0 | xargs -0 -n1 php -l
+      - name: Viewer and reels smoke
+        run: php tests/viewer-reels-smoke.php
+      - name: Viewer security audit
+        run: php tests/viewer-reels-audit.php
