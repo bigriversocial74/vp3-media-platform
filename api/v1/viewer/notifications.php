@@ -6,7 +6,7 @@ require_once VP3_ROOT.'/includes/viewer_api.php';
 use VP3\Network\ViewerNotificationService;
 
 $input=vp3_viewer_api_bootstrap(['GET','POST']);
-$viewer=vp3_require_viewer();
+$viewer=vp3_viewer_api_require_auth();
 $service=new ViewerNotificationService(vp3_db());
 
 if(vp3_method()==='GET'){
