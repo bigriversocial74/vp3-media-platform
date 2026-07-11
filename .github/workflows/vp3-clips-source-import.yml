@@ -1,0 +1,66 @@
+name: VP3 Clips bridge clean source import
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+
+permissions:
+  contents: write
+
+jobs:
+  import-readable-source:
+    if: github.event.pull_request.head.repo.full_name == github.repository && github.event.pull_request.head.ref == 'feature/vp3-clips-source-bridge-v1'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
+      - name: Verify transport chunks
+        run: |
+          set -euo pipefail
+          expected=(
+            368355a0fe5a3ff056421e3f3ec596e3321bae60c056c3e751b878547fdfe6ae
+            19cd005f1b3e47c7dbcf12d453716ca9824252299cd6ea256c7e65822dc1f8a2
+            c5b410fe15afa22860b086d5317853e94afff9cfb4cb8099e178adbf7b017419
+            522173cd8c03984256de43341ad124bc10ddd91cd0b3bcf6ace48469e2cb2b06
+          )
+          for part in 00 01 02 03; do
+            base64 --decode ".vp3-import/part-${part}.b64" > "/tmp/vp3-part-${part}.bin"
+            index=$((10#$part))
+            echo "${expected[$index]}  /tmp/vp3-part-${part}.bin" | sha256sum -c -
+          done
+      - name: Reconstruct audited source
+        run: |
+          set -euo pipefail
+          cat /tmp/vp3-part-{00..03}.bin > /tmp/vp3-clips-source-bridge.tar.gz
+          test "$(stat -c%s /tmp/vp3-clips-source-bridge.tar.gz)" = '12179'
+          echo 'ace1f75f3344a30ec035935749efa5d712639697fdcc03a8b3d33d450d30c543  /tmp/vp3-clips-source-bridge.tar.gz' | sha256sum -c -
+      - name: Reset to current main and extract
+        run: |
+          set -euo pipefail
+          git config user.name 'VP3 Build Automation'
+          git config user.email 'actions@users.noreply.github.com'
+          git fetch origin main
+          git reset --hard origin/main
+          git clean -fdx
+          tar -xzf /tmp/vp3-clips-source-bridge.tar.gz
+      - name: Commit bridge contract and API
+        run: |
+          set -euo pipefail
+          git add database/schema-clips-bridge.sql database/migrations/20260711_vp3_clips_source_bridge_v1.sql src/Network/BridgeCredentialService.php src/Network/ClipBridgeService.php includes/bridge-api.php api/v1/clips/bridge
+          git commit -m 'Build VP3 Clips source bridge contract and API'
+      - name: Commit administration and verification
+        run: |
+          set -euo pipefail
+          git add admin/platform-bridge.php admin/public-listings.php docs/VP3-CLIPS-SOURCE-BRIDGE-V1.md docs/VP3-CLIPS-SOURCE-BRIDGE-SCORE.md tests/clip-bridge-smoke.php .github/workflows/clips-source-bridge.yml
+          git commit -m 'Build VP3 Clips bridge administration and controls'
+      - name: Verify clean source history
+        run: |
+          set -euo pipefail
+          test ! -e .vp3-import
+          test ! -e .github/workflows/vp3-clips-source-import.yml
+          test -z "$(git status --porcelain)"
+          git log --oneline -3
+      - name: Replace staging history
+        run: git push --force-with-lease origin "HEAD:${{ github.event.pull_request.head.ref }}"
