@@ -119,7 +119,28 @@
     await load();
   };
 
-  document.addEventListener('click', (event) => {
+  document.addEventListener('click', async (event) => {
+    const muteButton = event.target.closest('[data-mute-button]');
+    if (muteButton) {
+      const reel = muteButton.closest('[data-reel]');
+      if (!reel) return;
+      if (app.dataset.authenticated !== '1') {
+        location.href = 'viewer-login.php?return=clips.php';
+        return;
+      }
+      const targetType = reel.dataset.creatorUuid ? 'creator' : 'show';
+      const targetUuid = targetType === 'creator' ? reel.dataset.creatorUuid : reel.dataset.showUuid;
+      if (!targetUuid || !confirm(`Mute this ${targetType} from your VP3 feeds?`)) return;
+      try {
+        await api('api/v1/viewer/comment-action.php', { action: 'mute', target_type: targetType, target_uuid: targetUuid });
+        const next = reel.nextElementSibling?.matches?.('[data-reel]') ? reel.nextElementSibling : reel.previousElementSibling;
+        reel.remove();
+        next?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } catch (error) {
+        alert(error.message);
+      }
+      return;
+    }
     const button = event.target.closest('[data-comments-button]');
     if (button) {
       const reel = button.closest('[data-reel]');
