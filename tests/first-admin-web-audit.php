@@ -27,7 +27,7 @@ foreach ($required as $needle) {
 }
 
 $forbidden = [
-    "$_POST['role']",
+    '$_POST[\'role\']',
     '$_REQUEST',
     'extract(',
     'md5(',
