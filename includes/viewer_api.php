@@ -21,6 +21,15 @@ function vp3_viewer_api_bootstrap(array $methods=['GET']): array
     return $method==='GET'?$_GET:vp3_json_input();
 }
 
+function vp3_viewer_api_require_auth(): array
+{
+    $viewer=vp3_viewer();
+    if(!$viewer){
+        vp3_json(['ok'=>false,'error'=>['code'=>'viewer_auth_required','message'=>'Sign in with a verified viewer account to continue.']],401);
+    }
+    return $viewer;
+}
+
 function vp3_viewer_api_execute(callable $callback): never
 {
     try{vp3_json(['ok'=>true,'data'=>$callback()]);}
