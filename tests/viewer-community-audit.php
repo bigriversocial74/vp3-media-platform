@@ -14,7 +14,7 @@ foreach([
 ]as$file){$runtime.=(string)file_get_contents($root.'/'.$file);}
 $required=[
  'vp3_verify_csrf','vp3_require_viewer','vp3_rate_limit','verified_viewer_required',
- 'viewer_blocks','viewer_mutes','viewer_comment_reports','safePath','INSERT IGNORE',
+ 'viewer_blocks','viewer_mutes','viewer_comment_reports','safePath','INSERT IGNORE','viewer_interaction_blocked',
  "publication_status='published'","moderation_status='approved'","rights_status='confirmed'",
 ];
 foreach($required as$needle){
